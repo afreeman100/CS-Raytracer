@@ -46,6 +46,8 @@ namespace Raytracer
             {
                 for (int col = 0; col < resolution.Item2; col++)
                 {
+                    newImage.SetPixel(col, row, Color.FromArgb(255, 0, 0, 0));
+
                     // Map from pixel coordinates to scene 
                     float r = (float)(this.canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
                     float c = (float)(this.canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
@@ -61,7 +63,7 @@ namespace Raytracer
                         if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
                         {
                             tSmallest = intersection.Item1;
-                            newImage.SetPixel(row, col, Color.FromArgb(255, 255, 100, 100));
+                            newImage.SetPixel(col, row, Color.FromArgb(255, 255, 100, 100));
                             // TODO calculate colour of pixel;
                         }
                     }
