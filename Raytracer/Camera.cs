@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Numerics;
 
 namespace Raytracer
@@ -38,7 +39,7 @@ namespace Raytracer
 
         public void Render(Tuple<int, int> resolution, List<ISceneObject> objects)
         {
-            Bitmap newBitmap = new Bitmap(resolution.Item2, resolution.Item1);
+            Bitmap newImage = new Bitmap(resolution.Item2, resolution.Item1);
 
             // 'Shoot' ray through every pixel in canvas
             for (int row = 0; row < resolution.Item1; row++)
@@ -49,38 +50,25 @@ namespace Raytracer
                     float r = (float)(this.canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
                     float c = (float)(this.canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
                     Vector3 worldCoord = this.focalPoint + this.focalLength * this.forward + c * this.right - r * this.up;
-
                     Vector3 direction = Vector3.Normalize(worldCoord - this.focalPoint);
 
-
                     // TODO STORE IN LIST AND ONLY CALCULATE AFTER ALL INTERSECTIONS HAVE BEEN FOUND
-
                     double tSmallest = 100000000;
                     foreach (ISceneObject obj in objects)
                     {
                         Tuple<double, Vector3> intersection = obj.Intersect(this.focalPoint, direction);
 
-                        Console.WriteLine(intersection);
-
                         if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
                         {
                             tSmallest = intersection.Item1;
-
-                            Color newColor = Color.FromArgb(100, 100, 100, 100);
-                            newBitmap.SetPixel(col, row, newColor);
+                            newImage.SetPixel(row, col, Color.FromArgb(255, 255, 100, 100));
                             // TODO calculate colour of pixel;
                         }
                     }
-
-                    //Console.WriteLine(worldCoord);
                 }
-                   
             }
-
-            Image img = (Image)newBitmap;
-
-
+            newImage.Save("img.png", ImageFormat.Png);
+            Console.WriteLine("Done!");
         }
-
     }
 }
