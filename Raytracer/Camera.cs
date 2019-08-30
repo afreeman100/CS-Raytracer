@@ -22,7 +22,7 @@ namespace Raytracer
         // Constructor with default camera parameters
         public Camera()
         {
-            this.focalPoint = new Vector3(0, 0, 0);
+            focalPoint = new Vector3(0, 0, 0);
             this.focalLength = 1;
             this.canvasDimensions = new Tuple<int, int>(1, 1);
         }

@@ -39,6 +39,8 @@
     <Compile Include="Run.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SceneObject.cs" />
+    <Compile Include="SceneObjectSphere.cs" />
+    <Compile Include="SceneObjectMesh.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

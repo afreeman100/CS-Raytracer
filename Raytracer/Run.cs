@@ -7,22 +7,17 @@ namespace Raytracer
 {
     public class Run
     {
-
-
         public static void Main(string[] args)
         {
-            Tuple<int, int> resolution = new Tuple<int, int>(100, 100);
             Camera camera = new Camera();
-
-            ISceneObject sphere = new Sphere(new Vector3(0, 3, 10), 2);
-            //sphere.Intersect(new Vector3(0, 1, 0), new Vector3(3, 4, 5));
-
             List<ISceneObject> objects = new List<ISceneObject>();
-            objects.Add(sphere);
+            Tuple<int, int> resolution = new Tuple<int, int>(100, 100);
+
+            objects.Add(new Sphere(new Vector3(0, 3, 10), 2));
+            objects.Add(new Sphere(new Vector3(2, 0, 8), 2));
+
 
             camera.Render(resolution, objects);
-
-
 
         }
     }
