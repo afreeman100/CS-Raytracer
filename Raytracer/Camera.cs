@@ -13,18 +13,13 @@ namespace Raytracer
         private readonly int focalLength;
         private readonly Tuple<int, int> canvasDimensions;
 
-        // Direction vectors
-        private readonly Vector3 right = new Vector3(1, 0, 0);
-        private readonly Vector3 up = new Vector3(0, 1, 0);
-        private readonly Vector3 forward = new Vector3(0, 0, 1);
-
 
         // Constructor with default camera parameters
         public Camera()
         {
-            this.focalPoint = new Vector3(0, 0, 0);
-            this.focalLength = 1;
-            this.canvasDimensions = new Tuple<int, int>(1, 1);
+            focalPoint = new Vector3(0, 0, 0);
+            focalLength = 1;
+            canvasDimensions = new Tuple<int, int>(1, 1);
         }
 
 
@@ -54,13 +49,21 @@ namespace Raytracer
             {
                 for (int col = 0; col < resolution.Item2; col++)
                 {
+
+
+
+
+                    // MAKE THIS BETTER!!
+
+
+
                     newImage.SetPixel(col, row, Color.FromArgb(255, 0, 0, 0));
 
                     // Map from pixel coordinates to scene 
-                    float r = (float)(this.canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
-                    float c = (float)(this.canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
-                    Vector3 worldCoord = this.focalPoint + this.focalLength * this.forward + c * this.right - r * this.up;
-                    Vector3 direction = Vector3.Normalize(worldCoord - this.focalPoint);
+                    float r = (float)(canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
+                    float c = (float)(canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
+                    Vector3 worldCoord = focalPoint + focalLength * Vector3.UnitZ + c * Vector3.UnitX - r * Vector3.UnitY;
+                    Vector3 direction = Vector3.Normalize(worldCoord - focalPoint);
 
                     // TODO STORE IN LIST AND ONLY CALCULATE AFTER ALL INTERSECTIONS HAVE BEEN FOUND
                     double tSmallest = double.MaxValue;
@@ -68,7 +71,6 @@ namespace Raytracer
                     {
                         // Distance along ray where the intersection ocurred and normal at that point
                         Tuple<double, Vector3> intersection = obj.Intersect(focalPoint, direction);
-
                         Vector3 intersectionPoint = focalPoint + (float)(intersection.Item1) * direction;
 
                         if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
