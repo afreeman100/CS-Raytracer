@@ -22,7 +22,7 @@ namespace Raytracer
         // Constructor with default camera parameters
         public Camera()
         {
-            focalPoint = new Vector3(0, 0, 0);
+            this.focalPoint = new Vector3(0, 0, 0);
             this.focalLength = 1;
             this.canvasDimensions = new Tuple<int, int>(1, 1);
         }
@@ -37,11 +37,19 @@ namespace Raytracer
         }
 
 
-        public void Render(Tuple<int, int> resolution, List<ISceneObject> objects)
+        // If a single value is given for resulution then create square image
+        public void Render(int resolution, Scene scene)
+        {
+            Render(new Tuple<int, int>(resolution, resolution), scene);
+        }
+
+
+        // Main loop which fires rays though each pixel of canvas 
+        public void Render(Tuple<int, int> resolution, Scene scene)
         {
             Bitmap newImage = new Bitmap(resolution.Item2, resolution.Item1);
 
-            // 'Shoot' ray through every pixel in canvas
+            // Determine color of each pixel
             for (int row = 0; row < resolution.Item1; row++)
             {
                 for (int col = 0; col < resolution.Item2; col++)
@@ -55,16 +63,19 @@ namespace Raytracer
                     Vector3 direction = Vector3.Normalize(worldCoord - this.focalPoint);
 
                     // TODO STORE IN LIST AND ONLY CALCULATE AFTER ALL INTERSECTIONS HAVE BEEN FOUND
-                    double tSmallest = 100000000;
-                    foreach (ISceneObject obj in objects)
+                    double tSmallest = double.MaxValue;
+                    foreach (ISceneObject obj in scene.objects)
                     {
-                        Tuple<double, Vector3> intersection = obj.Intersect(this.focalPoint, direction);
+                        // Distance along ray where the intersection ocurred and normal at that point
+                        Tuple<double, Vector3> intersection = obj.Intersect(focalPoint, direction);
+
+                        Vector3 intersectionPoint = focalPoint + (float)(intersection.Item1) * direction;
 
                         if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
                         {
                             tSmallest = intersection.Item1;
-                            newImage.SetPixel(col, row, Color.FromArgb(255, 255, 100, 100));
-                            // TODO calculate colour of pixel;
+                            Color objColor = obj.PointColor(scene, intersectionPoint, intersection.Item2, direction);
+                            newImage.SetPixel(col, row, objColor);
                         }
                     }
                 }

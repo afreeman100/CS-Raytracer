@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Numerics;
 
 namespace Raytracer
@@ -7,18 +8,23 @@ namespace Raytracer
     {
         private Vector3 centre;
         private double radius;
+        public Color color;
+
 
         // The most basic sphere within the scene is defined by its centre and radius
-        public Sphere(Vector3 centre, double radius)
+        public Sphere(Vector3 centre, double radius, Color color)
         {
             this.centre = centre;
             this.radius = radius;
+            this.color = color;
         }
 
+
+
         /*
-        Given an initial point and a normalized direction vector, see if line defined by these intersects the sphere.
-        Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
-        of intersection.
+        * Given an initial point and a normalized direction vector, see if line defined by these intersects the sphere.
+        * Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
+        * of intersection.
         */
         public Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
@@ -46,6 +52,27 @@ namespace Raytracer
 
             // No intersection found
             return new Tuple<double, Vector3>(-1, l);
+        }
+
+
+        /*
+         * Determine the intensity of a specific point on the object, based on the
+         * lighting and other objects in the scene.
+         */
+        public Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection)
+        {
+            Color pointColor = Color.FromArgb(0, 0, 0);
+
+            // Determine intensity contribution from each light source
+            foreach (ISceneLight light in scene.lights)
+            {
+                double lightIntensity = light.Intensity(scene, intersectionPoint, intersectionNormal, rayDirection);
+
+                Color temp = ColorManipulator.Multiply(this.color, lightIntensity);
+                pointColor = ColorManipulator.Add(pointColor, temp);
+
+            }
+            return pointColor;
         }
     }
 }
