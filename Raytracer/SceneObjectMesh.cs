@@ -8,7 +8,7 @@ namespace Raytracer
         public SceneObjectMesh(String fileName)
         {
 
-
+            Console.WriteLine("yey);
         }
 
         public Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
