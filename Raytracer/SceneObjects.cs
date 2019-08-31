@@ -21,10 +21,19 @@ namespace Raytracer
         }
 
 
+        /*
+         * Each object will have its own formula for determining collisions
+         * according to its particular defining properties
+         */
         public abstract Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction);
 
 
-        public Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
+        /*
+         * Most scene objects us the same procedure for calculating color at a
+         * particular point, however sometimes this must be overridden to first
+         * adjust the object normal
+         */
+        public virtual Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
         {
             Color pointColor = Color.FromArgb(0, 0, 0);
 

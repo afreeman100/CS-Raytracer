@@ -22,11 +22,22 @@ namespace Raytracer
         }
 
 
+        public override Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
+        {
+            // Flipping the intersection normal makes shadows work properly
+            return base.PointColor(scene, intersectionPoint, intersectionNormal * -1, rayDirection, reflections);
+        }
+
         /*
          * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
          */
         public override Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
+            if (Vector3.Dot(normal, direction) <= 0)
+            {
+                return new Tuple<double, Vector3>(-1, normal);
+            }
+
             const double EPSILON = 0.000001;
 
             Vector3 edge1, edge2, h, s, q;
