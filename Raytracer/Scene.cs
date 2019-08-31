@@ -18,11 +18,12 @@ namespace Raytracer
 
 
     /*
-     * Must be able to determine if a light is shining on an object
+     * Must be able to the contribution of light scources to each pixel
      */
     public interface ISceneLight
     {
-        double Intensity(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection);
+        double Diffuse(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal);
+        double Specular(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection);
     }
 
 

@@ -50,7 +50,6 @@ namespace Raytracer
             {
                 for (int col = 0; col < resolution.Item2; col++)
                 {
-
                     // Map from pixel coordinates to scene 
                     float r = (float)(canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
                     float c = (float)(canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));

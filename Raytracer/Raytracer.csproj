@@ -96,7 +96,6 @@
     <Compile Include="Run.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SceneObjectSphere.cs" />
-    <Compile Include="Objloader.cs" />
     <Compile Include="Lighting.cs" />
     <Compile Include="ColorManipulator.cs" />
   </ItemGroup>

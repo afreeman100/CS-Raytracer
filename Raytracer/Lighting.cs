@@ -9,11 +9,12 @@ namespace Raytracer
      */
     public class AmbientLight : ISceneLight
     {
-        private double intensity;
+        private readonly double intensity;
 
         public AmbientLight(double intensity) { this.intensity = intensity; }
 
-        public double Intensity(Scene s, Vector3 v1, Vector3 v2, Vector3 v3) { return intensity; }
+        public double Diffuse(Scene s, Vector3 v1, Vector3 v2) { return intensity; }
+        public double Specular(Scene s, Vector3 v1, Vector3 v2, Vector3 v3) { return 0; }
     }
 
 
@@ -21,11 +22,11 @@ namespace Raytracer
      * Directional lighting is defined by a direction vector, then acts like an infinite plane projecting
      * light in that direction. This may be occuded by objects in the scene. Intensity is dependent on the
      * angle between light vector and object normal vector.
-     */ 
+     */
     public class DirectionalLight : ISceneLight
     {
-        public Vector3 direction;
-        public double intensity;
+        public readonly Vector3 direction;
+        public readonly double intensity;
 
         public DirectionalLight(Vector3 direction, double intensity)
         {
@@ -34,21 +35,41 @@ namespace Raytracer
             this.intensity = intensity;
         }
 
-
-        public double Intensity(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection)
+        // Calculate light intensity based on angle between object normal and light direction
+        public double Diffuse(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal)
         {
-            // Not facing light
-            if (Vector3.Dot(intersectionNormal, direction) <= 0) { return 0; }
+            if (Occluded(scene, intersectionPoint, intersectionNormal)) { return 0; }
+            return Vector3.Dot(intersectionNormal, this.direction);
+        }
 
-            // Check all objects in the scene to see if they cast shadow - small offset to prevent self-occlusion
+
+        // Calculate highlight intensity besed on angle between viewer and light reflection
+        public double Specular(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection)
+        {
+            if (Occluded(scene, intersectionPoint, intersectionNormal)) { return 0; }
+
+            // Reflect light across object normal then dot prodict with viewer
+            Vector3 lightReflection = direction - 2 * intersectionNormal * Vector3.Dot(direction, intersectionNormal);
+            lightReflection = Vector3.Normalize(lightReflection);
+            double i = Vector3.Dot(lightReflection, rayDirection);
+
+            // Cannot subtract light if reflection is pointing away from viewer!
+            return Math.Max(0, i);
+        }
+
+
+        private bool Occluded(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal)
+        {
+            // Facing away from light
+            if (Vector3.Dot(intersectionNormal, direction) <= 0) { return true; }
+
+            // Shadows
             foreach (ISceneObject shadow_obj in scene.objects)
             {
                 Tuple<double, Vector3> intersection = shadow_obj.Intersect(intersectionPoint, direction);
-                if (intersection.Item1 > 0.0001) { return 0; }
+                if (intersection.Item1 > 0.0001) { return true; }
             }
-
-            // Calculate light intensity based on angle between object normal and light direction
-            return Vector3.Dot(intersectionNormal, direction);     
+            return false;
         }
     }
 }

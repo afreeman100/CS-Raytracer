@@ -6,9 +6,12 @@ namespace Raytracer
 {
     public class Sphere : ISceneObject
     {
-        private Vector3 centre;
-        private double radius;
-        public Color color;
+        private readonly Vector3 centre;
+        private readonly double radius;
+        private readonly Color color;
+
+        private readonly double specularReflectivity;
+        private readonly double specularFalloff;
 
 
         // The most basic sphere within the scene is defined by its centre and radius
@@ -17,8 +20,11 @@ namespace Raytracer
             this.centre = centre;
             this.radius = radius;
             this.color = color;
-        }
 
+            // Default properties for specular highlights
+            this.specularReflectivity = 0.3;
+            this.specularFalloff = 10;
+        }
 
 
         /*
@@ -66,12 +72,25 @@ namespace Raytracer
             // Determine intensity contribution from each light source
             foreach (ISceneLight light in scene.lights)
             {
-                double lightIntensity = light.Intensity(scene, intersectionPoint, intersectionNormal, rayDirection);
+                double diffuse = light.Diffuse(scene, intersectionPoint, intersectionNormal);
+                double specular = light.Specular(scene, intersectionPoint, intersectionNormal, rayDirection);
+                specular = specularReflectivity * Math.Pow(specular, specularFalloff);
 
-                Color temp = ColorManipulator.Multiply(this.color, lightIntensity);
+                // Diffuse lighting takes the color of the object
+                Color temp = ColorManipulator.Multiply(this.color, diffuse);
                 pointColor = ColorManipulator.Add(pointColor, temp);
 
+                // Specular highlights take the color of the light (currently fixed to white)
+                temp = ColorManipulator.Multiply(Color.White, specular);
+                pointColor = ColorManipulator.Add(pointColor, temp);
             }
+
+
+            // TODO color contribution from reflections!
+
+
+
+
             return pointColor;
         }
     }

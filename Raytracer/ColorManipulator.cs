@@ -26,12 +26,12 @@ namespace Raytracer
         }
 
 
-        // Clip to ensure values are no more than 255
+        // Clip to ensure values are in range (0, 255)
         public static Color Clip(int r, int g, int b)
         {
-            r = Math.Min(255, r);
-            g = Math.Min(255, g);
-            b = Math.Min(255, b);
+            r = Math.Max(0, Math.Min(255, r));
+            g = Math.Max(0, Math.Min(255, g));
+            b = Math.Max(0, Math.Min(255, b));
 
             return Color.FromArgb(r, g, b);
         }
