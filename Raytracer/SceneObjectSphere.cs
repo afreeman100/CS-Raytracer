@@ -4,31 +4,17 @@ using System.Numerics;
 
 namespace Raytracer
 {
-    public class Sphere : ISceneObject
+    public class Sphere : SceneObject
     {
         private readonly Vector3 centre;
         private readonly double radius;
-        private readonly Color color;
-        private readonly double reflectivity;
-        private readonly double specularReflectivity = 0.3;
-        private readonly double specularFalloff = 10;
 
-
-        // The most basic sphere within the scene is defined by its centre and radius
-        public Sphere(Vector3 centre, double radius, Color color)
-        {
-            this.centre = centre;
-            this.radius = radius;
-            this.color = color;
-            this.reflectivity = 0;
-        }
 
         public Sphere(Vector3 centre, double radius, Color color, double reflectivity)
+            : base(color, reflectivity)
         {
             this.centre = centre;
             this.radius = radius;
-            this.color = color;
-            this.reflectivity = reflectivity;
         }
 
 
@@ -37,7 +23,7 @@ namespace Raytracer
         * Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
         * of intersection.
         */
-        public Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
+        public override Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
             Vector3 l = position - this.centre;
             double b = 2 * Vector3.Dot(direction, l);
@@ -63,51 +49,6 @@ namespace Raytracer
 
             // No intersection found
             return new Tuple<double, Vector3>(-1, l);
-        }
-
-
-        /*
-         * Determine the intensity of a specific point on the object, based on the
-         * lighting and other objects in the scene.
-         */
-        public Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
-        {
-            Color pointColor = Color.FromArgb(0, 0, 0);
-
-            // Determine intensity contribution from each light source
-            foreach (ISceneLight light in scene.lights)
-            {
-                double diffuse = light.Diffuse(scene, intersectionPoint, intersectionNormal);
-                double specular = light.Specular(scene, intersectionPoint, intersectionNormal, rayDirection);
-                specular = specularReflectivity * Math.Pow(specular, specularFalloff);
-
-                // Diffuse lighting takes the color of the object
-                Color temp = ColorManipulator.Multiply(this.color, diffuse);
-                pointColor = ColorManipulator.Add(pointColor, temp);
-
-                // Specular highlights take the color of the light (currently fixed to white)
-                temp = ColorManipulator.Multiply(Color.White, specular);
-                pointColor = ColorManipulator.Add(pointColor, temp);
-            }
-
-
-            // Color contribution from reflections
-            if (reflections > 0)
-            {
-                // Reflect view ray across intersection normal and fire new ray in this direction
-                Vector3 viewReflection = rayDirection - 2 * intersectionNormal * Vector3.Dot(rayDirection, intersectionNormal);
-                Tuple<bool, double, Vector3, ISceneObject> intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
-
-                // No reflection
-                if (!intersection.Item1) { return pointColor; }
-
-                // Blend object color with reflected color according to object reflectivity
-                Vector3 intersectionPointNew = intersectionPoint + (float)(intersection.Item2) * viewReflection;
-                Color objColor = intersection.Item4.PointColor(scene, intersectionPointNew, intersection.Item3, viewReflection, reflections - 1);
-                pointColor = ColorManipulator.Add(ColorManipulator.Multiply(objColor, reflectivity), ColorManipulator.Multiply(pointColor, (1 - reflectivity)));
-            }
-
-            return pointColor;
         }
     }
 }

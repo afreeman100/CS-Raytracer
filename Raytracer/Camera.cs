@@ -47,7 +47,7 @@ namespace Raytracer
                     Vector3 direction = Vector3.Normalize(worldCoord - focalPoint);
 
                     // intersection occurred?,  distance,  normal,  scene object
-                    Tuple<bool, double, Vector3, ISceneObject> intersection = scene.ClosestIntersection(focalPoint, direction);
+                    Tuple<bool, double, Vector3, SceneObject> intersection = scene.ClosestIntersection(focalPoint, direction);
 
                     if (!intersection.Item1)
                     {

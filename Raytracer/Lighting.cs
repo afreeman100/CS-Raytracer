@@ -71,7 +71,7 @@ namespace Raytracer
             if (Vector3.Dot(intersectionNormal, direction) <= 0) { return true; }
 
             // Shadows
-            foreach (ISceneObject shadow_obj in scene.objects)
+            foreach (SceneObject shadow_obj in scene.objects)
             {
                 Tuple<double, Vector3> intersection = shadow_obj.Intersect(intersectionPoint, direction);
                 if (intersection.Item1 > 0.0001) { return true; }
