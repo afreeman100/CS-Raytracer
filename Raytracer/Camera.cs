@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Numerics;
 
 namespace Raytracer
@@ -13,6 +11,7 @@ namespace Raytracer
         private readonly Vector3 focalPoint;
         private readonly int focalLength;
         private readonly Tuple<int, int> canvasDimensions;
+        private readonly int nReflections;
 
 
         // Constructor with default camera parameters
@@ -21,17 +20,8 @@ namespace Raytracer
             focalPoint = new Vector3(0, 0, 0);
             focalLength = 1;
             canvasDimensions = new Tuple<int, int>(1, 1);
+            nReflections = 5;
         }
-
-
-        // Constructor for user-specified paraeters
-        public Camera(Vector3 focalPoint, int focalLength, Tuple<int, int> canvasDimensions)
-        {
-            this.focalPoint = focalPoint;
-            this.focalLength = focalLength;
-            this.canvasDimensions = canvasDimensions;
-        }
-
 
         // If a single value is given for resulution then create square image
         public void Render(int resolution, Scene scene)
@@ -68,7 +58,7 @@ namespace Raytracer
                     {
                         // Determine color based on scene object
                         Vector3 intersectionPoint = focalPoint + (float)(intersection.Item2) * direction;
-                        Color objColor = intersection.Item4.PointColor(scene, intersectionPoint, intersection.Item3, direction);
+                        Color objColor = intersection.Item4.PointColor(scene, intersectionPoint, intersection.Item3, direction, nReflections);
                         newImage.SetPixel(col, row, objColor);
                     }
                 }

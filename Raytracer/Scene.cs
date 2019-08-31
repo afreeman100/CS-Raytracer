@@ -5,31 +5,6 @@ using System.Numerics;
 
 namespace Raytracer
 {
-    /*
-     * Interface for scene objects. These must be able to:
-     *      - Calculate intersection with a ray
-     *      - Calculate the color of a specific point, based on lighting and other scene objects
-     */
-    public interface ISceneObject
-    {
-        Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction);
-        Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection);
-    }
-
-
-    /*
-     * Must be able to the contribution of light scources to each pixel
-     */
-    public interface ISceneLight
-    {
-        double Diffuse(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal);
-        double Specular(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection);
-    }
-
-
-    /*
-     * Small class to store the objects and lights in a scene
-     */
     public class Scene
     {
         public List<ISceneObject> objects;
@@ -60,7 +35,7 @@ namespace Raytracer
             foreach (ISceneObject obj in objects)
             {
                 Tuple<double, Vector3> intersection = obj.Intersect(startPoint, direction);
-                if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
+                if (intersection.Item1 > 0.0001 && intersection.Item1 < tSmallest)
                 {
                     tSmallest = intersection.Item1;
                     i = new Tuple<double, Vector3, ISceneObject>(intersection.Item1, intersection.Item2, obj);

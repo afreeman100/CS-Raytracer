@@ -4,72 +4,84 @@ using System.Numerics;
 
 namespace Raytracer
 {
-    public class Sphere : ISceneObject
+    public class Tri : ISceneObject
     {
-        private readonly Vector3 centre;
-        private readonly double radius;
+        private readonly Vector3 v0;
+        private readonly Vector3 v1;
+        private readonly Vector3 v2;
+        private readonly Vector3 normal;
         private readonly Color color;
         private readonly double reflectivity;
         private readonly double specularReflectivity = 0.3;
         private readonly double specularFalloff = 10;
 
+        private readonly bool doubleSided = true;
 
-        // The most basic sphere within the scene is defined by its centre and radius
-        public Sphere(Vector3 centre, double radius, Color color)
+        public Tri(Vector3 v0, Vector3 v1, Vector3 v2, Color color, double reflectivity)
         {
-            this.centre = centre;
-            this.radius = radius;
-            this.color = color;
-            this.reflectivity = 0;
-        }
+            this.v0 = v0;
+            this.v1 = v1;
+            this.v2 = v2;
+            this.normal = Vector3.Normalize(Vector3.Cross(v2 - v0, v0 - v1));
 
-        public Sphere(Vector3 centre, double radius, Color color, double reflectivity)
-        {
-            this.centre = centre;
-            this.radius = radius;
             this.color = color;
             this.reflectivity = reflectivity;
         }
 
 
         /*
-        * Given an initial point and a normalized direction vector, see if line defined by these intersects the sphere.
-        * Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
-        * of intersection.
-        */
+         * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+         */
         public Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
-            Vector3 l = position - this.centre;
-            double b = 2 * Vector3.Dot(direction, l);
-            double c = l.LengthSquared() - Math.Pow(this.radius, 2);
-
-            double determinant = b * b - 4 * c;
-
-            if (determinant >= 0)
+            if (!doubleSided && Vector3.Dot(normal, direction) <= 0)
             {
-                // Possible intersection points
-                double t1 = (-b + Math.Sqrt(determinant)) / 2;
-                double t2 = (-b - Math.Sqrt(determinant)) / 2;
-
-                // Find intersection point that is closes to the camera without being behind it
-                double t = (t1 > 0 && t2 > 0) ? Math.Min(t1, t2) : Math.Max(t1, t2);
-
-                // Calculate vector from centre to intersection point and normalize
-                Vector3 normal = (position + (float)(t) * direction) - this.centre;
-                normal = Vector3.Normalize(normal);
-
-                return new Tuple<double, Vector3>(t, normal);
+                return new Tuple<double, Vector3>(-1, normal);
             }
 
-            // No intersection found
-            return new Tuple<double, Vector3>(-1, l);
+            const double EPSILON = 0.0000001;
+
+            Vector3 edge1, edge2, h, s, q;
+            float a, f, u, v;
+            edge1 = v1 - v0;
+            edge2 = v2 - v0;
+            h = Vector3.Cross(direction, edge2);
+            a = Vector3.Dot(edge1, h);
+
+            if (a > -EPSILON && a < EPSILON)
+            {
+                return new Tuple<double, Vector3>(-1, normal);
+            }
+
+            f = (float)(1.0 / a);
+            s = position - v0;
+            u = f * Vector3.Dot(s, h);
+
+            if (u < 0.0 || u > 1.0)
+            {
+                return new Tuple<double, Vector3>(-1, normal);
+            }
+
+            q = Vector3.Cross(s, edge1);
+            v = f * Vector3.Dot(direction, q);
+            if (v < 0.0 || u + v > 1.0)
+            {
+                return new Tuple<double, Vector3>(-1, normal);
+            }
+
+            // At this stage we can compute t to find out where the intersection point is on the line.
+            float t = f * Vector3.Dot(edge2, q);
+            if (t > EPSILON) // ray intersection
+            {
+                return new Tuple<double, Vector3>(t, normal);
+            }
+            else // This means that there is a line intersection but not a ray intersection.
+            {
+                return new Tuple<double, Vector3>(-1, normal);
+            }
         }
 
 
-        /*
-         * Determine the intensity of a specific point on the object, based on the
-         * lighting and other objects in the scene.
-         */
         public Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
         {
             Color pointColor = Color.FromArgb(0, 0, 0);

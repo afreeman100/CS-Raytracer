@@ -98,6 +98,8 @@
     <Compile Include="SceneObjectSphere.cs" />
     <Compile Include="Lighting.cs" />
     <Compile Include="ColorManipulator.cs" />
+    <Compile Include="SceneObjects.cs" />
+    <Compile Include="SceneObjectTri.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,9 +1,15 @@
 ﻿using System;
-using System.Drawing;
 using System.Numerics;
 
 namespace Raytracer
 {
+    public interface ISceneLight
+    {
+        double Diffuse(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal);
+        double Specular(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection);
+    }
+
+
     /*
      * Ambient lighting - always constant intensity regardless of position in scene
      */
@@ -34,6 +40,7 @@ namespace Raytracer
             this.direction = Vector3.Normalize(direction * -1);
             this.intensity = intensity;
         }
+
 
         // Calculate light intensity based on angle between object normal and light direction
         public double Diffuse(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal)
