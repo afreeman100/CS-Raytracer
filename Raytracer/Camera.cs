@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Numerics;
 
 namespace Raytracer
@@ -50,35 +51,26 @@ namespace Raytracer
                 for (int col = 0; col < resolution.Item2; col++)
                 {
 
-
-
-
-                    // MAKE THIS BETTER!!
-
-
-
-                    newImage.SetPixel(col, row, Color.FromArgb(255, 0, 0, 0));
-
                     // Map from pixel coordinates to scene 
                     float r = (float)(canvasDimensions.Item1 * ((row + 0.5) / resolution.Item1 - 0.5));
                     float c = (float)(canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
                     Vector3 worldCoord = focalPoint + focalLength * Vector3.UnitZ + c * Vector3.UnitX - r * Vector3.UnitY;
                     Vector3 direction = Vector3.Normalize(worldCoord - focalPoint);
 
-                    // TODO STORE IN LIST AND ONLY CALCULATE AFTER ALL INTERSECTIONS HAVE BEEN FOUND
-                    double tSmallest = double.MaxValue;
-                    foreach (ISceneObject obj in scene.objects)
-                    {
-                        // Distance along ray where the intersection ocurred and normal at that point
-                        Tuple<double, Vector3> intersection = obj.Intersect(focalPoint, direction);
-                        Vector3 intersectionPoint = focalPoint + (float)(intersection.Item1) * direction;
+                    // intersection occurred?,  distance,  normal,  scene object
+                    Tuple<bool, double, Vector3, ISceneObject> intersection = scene.ClosestIntersection(focalPoint, direction);
 
-                        if (intersection.Item1 > 0 && intersection.Item1 < tSmallest)
-                        {
-                            tSmallest = intersection.Item1;
-                            Color objColor = obj.PointColor(scene, intersectionPoint, intersection.Item2, direction);
-                            newImage.SetPixel(col, row, objColor);
-                        }
+                    if (!intersection.Item1)
+                    {
+                        // No intersection -> set pixel to black
+                        newImage.SetPixel(col, row, Color.FromName("Black"));
+                    }
+                    else
+                    {
+                        // Determine color based on scene object
+                        Vector3 intersectionPoint = focalPoint + (float)(intersection.Item2) * direction;
+                        Color objColor = intersection.Item4.PointColor(scene, intersectionPoint, intersection.Item3, direction);
+                        newImage.SetPixel(col, row, objColor);
                     }
                 }
             }

@@ -16,6 +16,7 @@ namespace Raytracer
             scene.lights.Add(new DirectionalLight(new Vector3(1, -0.5F, 0), 0.8));
 
             scene.objects.Add(new Sphere(new Vector3(0, 3, 10), 2, Color.FromName("SlateBlue")));
+            scene.objects.Add(new Sphere(new Vector3(1, 2, 8), 2, Color.FromName("Green")));
             scene.objects.Add(new Sphere(new Vector3(2, 0, 8), 2, Color.FromName("DarkRed")));
 
             camera.Render(resolution, scene);
