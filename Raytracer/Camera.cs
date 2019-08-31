@@ -12,15 +12,17 @@ namespace Raytracer
         private readonly int focalLength;
         private readonly Tuple<int, int> canvasDimensions;
         private readonly int nReflections;
+        private readonly string fName;
 
 
         // Constructor with default camera parameters
-        public Camera()
+        public Camera(string fName)
         {
             focalPoint = new Vector3(0, 0, 0);
             focalLength = 1;
             canvasDimensions = new Tuple<int, int>(1, 1);
             nReflections = 5;
+            this.fName = fName;
         }
 
         // If a single value is given for resulution then create square image
@@ -63,7 +65,7 @@ namespace Raytracer
                     }
                 }
             }
-            newImage.Save("img.png", ImageFormat.Png);
+            newImage.Save(fName + ".png", ImageFormat.Png);
             Console.WriteLine("Done!");
         }
     }
