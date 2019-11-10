@@ -14,30 +14,30 @@ namespace Raytracer
             scene.lights.Add(new AmbientLight(0.3));
             scene.lights.Add(new DirectionalLight(new Vector3(0.5F, -1, 0.5F), 0.7));
 
-            scene.objects.Add(new SceneObjects.Sphere(new Vector3(3, 1, 18), 1, Color.FromName("Blue"), 0.05));
-            scene.objects.Add(new SceneObjects.Sphere(new Vector3(-3, -1, 15), 1, Color.FromName("Green"), 0.1));
-            scene.objects.Add(new SceneObjects.Sphere(new Vector3(0, 0, 12), 2, Color.FromName("LightGray"), 0.7));
+            scene.AddObject(new SceneObjects.Sphere(new Vector3(3, 1, 18), 1, Color.FromName("Blue"), 0.05));
+            scene.AddObject(new SceneObjects.Sphere(new Vector3(-3, -1, 15), 1, Color.FromName("Green"), 0.1));
+            scene.AddObject(new SceneObjects.Sphere(new Vector3(0, 0, 12), 2, Color.FromName("LightGray"), 0.7));
 
             // Floor
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(100, -3, 100),
+            scene.AddObject(new SceneObjects.Tri(new Vector3(100, -3, 100),
                               new Vector3(-100, -3, 100),
                               new Vector3(100, -3, -100),
                               Color.FromArgb(230, 230, 250),
                               0.25));
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(-100, -3, -100),
+            scene.AddObject(new SceneObjects.Tri(new Vector3(-100, -3, -100),
                               new Vector3(100, -3, -100),
                               new Vector3(-100, -3, 100),
                               Color.FromArgb(230, 230, 250),
                               0.25));
 
             // Pink wall
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(0, -3, 25),
                               new Vector3(10, -3, 14),
                               new Vector3(0, 4, 25),
                               Color.FromArgb(150, 0, 150),
                               0));
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(10, 4, 14),
                               new Vector3(0, 4, 25),
                               new Vector3(10, -3, 14),
@@ -45,13 +45,13 @@ namespace Raytracer
                               0));
 
             // Blue wall
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(0, -3, 25),
                               new Vector3(0, 4, 25),
                               new Vector3(-10, -3, 14),
                               Color.FromArgb(0, 0, 150),
                               0));
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(-10, 4, 14),
                               new Vector3(-10, -3, 14),
                               new Vector3(0, 4, 25),
@@ -78,18 +78,18 @@ namespace Raytracer
                 double rad = DoubleInRange(2, 0.5);
                 double reflect = DoubleInRange(0.4, 0);
                 Color c = Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256));
-                scene.objects.Add(new SceneObjects.Sphere(new Vector3((float)p1, (float)p2, (float)p3), rad, c, reflect));
+                scene.AddObject(new SceneObjects.Sphere(new Vector3((float)p1, (float)p2, (float)p3), rad, c, reflect));
             }
 
             double DoubleInRange(double dMax, double dMin) { return rnd.NextDouble() * (dMax - dMin) + dMin; }
 
             // Floor
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(100, -3, 100),
+            scene.AddObject(new SceneObjects.Tri(new Vector3(100, -3, 100),
                               new Vector3(-100, -3, 100),
                               new Vector3(100, -3, -100),
                               Color.FromArgb(230, 230, 250),
                               0.25));
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(-100, -3, -100),
+            scene.AddObject(new SceneObjects.Tri(new Vector3(-100, -3, -100),
                               new Vector3(100, -3, -100),
                               new Vector3(-100, -3, 100),
                               Color.FromArgb(230, 230, 250),
@@ -108,38 +108,60 @@ namespace Raytracer
             scene.lights.Add(new DirectionalLight(new Vector3(0.5F, -1, 0.5F), 0.7));
 
             // Pink wall
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(0, -3, 25),
                               new Vector3(10, -3, 14),
                               new Vector3(0, 4, 25),
                               Color.FromArgb(150, 0, 150),
                               0));
-            scene.objects.Add(new SceneObjects.Tri(
+            scene.AddObject(new SceneObjects.Tri(
                               new Vector3(10, 4, 14),
                               new Vector3(0, 4, 25),
                               new Vector3(10, -3, 14),
                               Color.FromArgb(150, 0, 150),
                               0));
 
-            // Blue wall
-            scene.objects.Add(new SceneObjects.Tri(
-                              new Vector3(0, -3, 25),
-                              new Vector3(0, 4, 25),
-                              new Vector3(-2, -3, 14),
-                              Color.FromArgb(0, 0, 150),
-                              0));
+            //// Blue wall
+            //scene.AddObject(new SceneObjects.Tri(
+            //                  new Vector3(0, -3, 25),
+            //                  new Vector3(0, 4, 25),
+            //                  new Vector3(-2, -3, 14),
+            //                  Color.FromArgb(0, 0, 150),
+            //                  0));
+
+            // Blue square
+            //scene.AddObject(SceneObjects.Composites.Quad(
+            //                    new Vector3(0, -3, 25),
+            //                    new Vector3(0, 4, 25),
+            //                    new Vector3(-2, -3, 14),
+            //                    new Vector3(-2, 4, 14),
+            //                    Color.FromArgb(0, 0, 150),
+            //                    0));
+
+            // Blue rectangle
+            scene.AddObject(SceneObjects.Composites.Cube(
+                                new Vector3(4, -1, 24),
+                                new Vector3(4, 5, 24),
+                                new Vector3(2, -3, 18),
+                                new Vector3(2, 3, 18),
+
+                                new Vector3(-2, -1, 24),
+                                new Vector3(-2, 5, 24),
+                                new Vector3(-4, -3, 18),
+                                new Vector3(-4, 3, 18),
+                                Color.FromArgb(0, 0, 150),
+                                0));
+
 
             // Floor
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(100, -3, 100),
-                              new Vector3(-100, -3, 100),
-                              new Vector3(100, -3, -100),
-                              Color.FromArgb(230, 230, 250),
-                              0));
-            scene.objects.Add(new SceneObjects.Tri(new Vector3(-100, -3, -100),
-                              new Vector3(100, -3, -100),
-                              new Vector3(-100, -3, 100),
-                              Color.FromArgb(230, 230, 250),
-                              0));
+            scene.AddObject(SceneObjects.Composites.Quad(
+                                new Vector3(100, -4, 100),
+                                new Vector3(-100, -4, 100),
+                                new Vector3(100, -4, -100),
+                                new Vector3(-100, -4, -100),
+                                Color.FromArgb(230, 230, 250),
+                                0));
+
             return scene;
         }
     }

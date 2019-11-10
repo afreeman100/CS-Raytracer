@@ -34,7 +34,20 @@ namespace Raytracer
                     intersection = new Intersection(true, i.Item1, i.Item2, obj);
                 }
             }
-            return intersection; //new Intersection(anyIntersections, intersection.Item1, intersection.Item2, intersection.Item3);
+            return intersection;
+        }
+
+        public void AddObject(SceneObject obj)
+        {
+            objects.Add(obj);
+        }
+
+        public void AddObject(IEnumerable<SceneObject> objs)
+        {
+            foreach(var obj in objs)
+            {
+                objects.Add(obj);
+            }
         }
     }
 }

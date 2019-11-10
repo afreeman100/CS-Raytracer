@@ -99,9 +99,9 @@
     <Compile Include="ColorManipulator.cs" />
     <Compile Include="SceneBuilder.cs" />
     <Compile Include="SceneObjects\SceneObjects.cs" />
-    <Compile Include="SceneObjects\SceneObjectSphere.cs" />
-    <Compile Include="SceneObjects\SceneObjectTri.cs" />
-    <Compile Include="SceneObjects\Quad.cs" />
+    <Compile Include="SceneObjects\Sphere.cs" />
+    <Compile Include="SceneObjects\Tri.cs" />
+    <Compile Include="SceneObjects\Composites.cs" />
     <Compile Include="Intersection.cs" />
   </ItemGroup>
   <ItemGroup>

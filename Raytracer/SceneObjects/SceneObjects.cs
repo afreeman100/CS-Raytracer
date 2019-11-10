@@ -28,11 +28,11 @@ namespace Raytracer.SceneObjects
         public abstract Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction);
 
 
-        /*
-         * Most scene objects us the same procedure for calculating color at a
-         * particular point, however sometimes this must be overridden to first
-         * adjust the object normal
-         */
+        /// <summary>
+        /// Most scene objects us the same procedure for calculating color at a
+        /// particular point, however sometimes this must be overridden to first
+        /// adjust the object normal
+        /// </summary>
         public virtual Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
         {
             Color pointColor = Color.FromArgb(0, 0, 0);
