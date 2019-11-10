@@ -7,7 +7,7 @@ namespace Raytracer
 {
     public static class SceneBuilder
     {
-        public static Scene SceneTwo(int numSpheres)
+        public static Scene SphereGenerator(int numSpheres)
         {
             Scene scene = new Scene();
             Random rnd = new Random();
@@ -74,6 +74,19 @@ namespace Raytracer
                                 new Vector3(-4, 3, 18),
                                 Color.FromArgb(0, 0, 150),
                                 0));
+
+            //scene.AddObject(SceneObjects.Composites.DoubleSidedCube(
+            //        new Vector3(4, -1, 24),
+            //        new Vector3(4, 5, 24),
+            //        new Vector3(2, -3, 18),
+            //        new Vector3(2, 3, 18),
+
+            //        new Vector3(-2, -1, 24),
+            //        new Vector3(-2, 5, 24),
+            //        new Vector3(-4, -3, 18),
+            //        new Vector3(-4, 3, 18),
+            //        Color.FromArgb(0, 0, 150),
+            //        0));
 
             // Floor
             scene.AddObject(SceneObjects.Composites.Quad(

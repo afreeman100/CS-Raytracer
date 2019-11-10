@@ -8,7 +8,7 @@
             int resolution = 500;
 
             Scene scene = SceneBuilder.SceneThree();
-            //Scene scene = SceneBuilder.SceneTwo(50);
+            //Scene scene = SceneBuilder.SphereGenerator(50);
 
             camera.Render(resolution, scene);
         }

@@ -11,6 +11,8 @@ namespace Raytracer.SceneObjects
         private readonly double reflectivity;
         private readonly double specularReflectivity;
         private readonly double specularFalloff;
+        private readonly double transparency = 0.5;
+        private readonly double refractiveIndex = 0.2;
 
 
         protected SceneObject(Color color, double reflectivity)
@@ -21,15 +23,13 @@ namespace Raytracer.SceneObjects
             this.specularFalloff = 10;
         }
 
-
         /// <summary>
         /// Each object will have its own formula for determining collisions according to its particular defining properties
         /// </summary>
         public abstract Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction);
 
-
         /// <summary>
-        /// Most scene objects us the same procedure for calculating color at a
+        /// Most scene objects use the same procedure for calculating color at a
         /// particular point, however sometimes this must be overridden to first
         /// adjust the object normal
         /// </summary>
@@ -45,7 +45,7 @@ namespace Raytracer.SceneObjects
                 specular = specularReflectivity * Math.Pow(specular, specularFalloff);
 
                 // Diffuse lighting takes the color of the object
-                Color temp = ColorManipulator.Multiply(this.color, diffuse);
+                Color temp = ColorManipulator.Multiply(color, diffuse);
                 pointColor = ColorManipulator.Add(pointColor, temp);
 
                 // Specular highlights take the color of the light (currently fixed to white)
@@ -53,15 +53,25 @@ namespace Raytracer.SceneObjects
                 pointColor = ColorManipulator.Add(pointColor, temp);
             }
 
+            // Transparency
+            Intersection intersection = scene.ClosestIntersection(intersectionPoint, rayDirection);
+            if (intersection.DidIntersect)
+            {
+                // TODO refraction
+
+                var intersectionPointNew = intersectionPoint + (float)(intersection.Position) * rayDirection;
+                Color objColor = intersection.IntersectedObject.PointColor(scene, intersectionPointNew, intersection.Normal, rayDirection, reflections);                
+                pointColor = ColorManipulator.Add(
+                    ColorManipulator.Multiply(pointColor, 1 - transparency),
+                    ColorManipulator.Multiply(objColor, transparency));
+            }
 
             // Color contribution from reflections
             if (reflections > 0)
             {
                 // Reflect view ray across intersection normal and fire new ray in this direction
                 Vector3 viewReflection = rayDirection - 2 * intersectionNormal * Vector3.Dot(rayDirection, intersectionNormal);
-                //Tuple<bool, double, Vector3, SceneObject> intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
-                Intersection intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
-
+                intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
 
                 // No reflection
                 if (!intersection.DidIntersect) { return pointColor; }

@@ -7,10 +7,7 @@ namespace Raytracer
 {
     public class Camera
     {
-        // Camera properties
-
-        public Vector3 focalPoint { get; }
-
+        private readonly Vector3 focalPoint;
         private readonly int focalLength;
         private readonly Tuple<int, int> canvasDimensions;
         private readonly int nReflections;
@@ -33,7 +30,6 @@ namespace Raytracer
             Render(new Tuple<int, int>(resolution, resolution), scene);
         }
 
-
         // Main loop which fires rays though each pixel of canvas 
         public void Render(Tuple<int, int> resolution, Scene scene)
         {
@@ -49,7 +45,6 @@ namespace Raytracer
                     float c = (float)(canvasDimensions.Item2 * ((col + 0.5) / resolution.Item2 - 0.5));
                     Vector3 worldCoord = focalPoint + focalLength * Vector3.UnitZ + c * Vector3.UnitX - r * Vector3.UnitY;
                     Vector3 direction = Vector3.Normalize(worldCoord - focalPoint);
-
                     Intersection intersection = scene.ClosestIntersection(focalPoint, direction);
 
                     if (!intersection.DidIntersect)
@@ -68,6 +63,7 @@ namespace Raytracer
             }
             newImage.Save(fName + ".png", ImageFormat.Png);
             Console.WriteLine("Done!");
+            newImage.Dispose();
         }
     }
 }
