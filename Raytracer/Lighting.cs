@@ -10,9 +10,9 @@ namespace Raytracer
     }
 
 
-    /*
-     * Ambient lighting - always constant intensity regardless of position in scene
-     */
+    /// <summary>
+    /// Ambient lighting - always constant intensity regardless of position in scene
+    /// </summary>
     public class AmbientLight : ISceneLight
     {
         private readonly double intensity;
@@ -24,11 +24,11 @@ namespace Raytracer
     }
 
 
-    /*
-     * Directional lighting is defined by a direction vector, then acts like an infinite plane projecting
-     * light in that direction. This may be occuded by objects in the scene. Intensity is dependent on the
-     * angle between light vector and object normal vector.
-     */
+    /// <summary>
+    /// Directional lighting is defined by a direction vector, then acts like an infinite plane projecting
+    /// light in that direction. This may be occuded by objects in the scene. Intensity is dependent on the
+    /// angle between light vector and object normal vector.
+    /// </summary>
     public class DirectionalLight : ISceneLight
     {
         public readonly Vector3 direction;
@@ -71,7 +71,7 @@ namespace Raytracer
             if (Vector3.Dot(intersectionNormal, direction) <= 0) { return true; }
 
             // Shadows
-            foreach (SceneObject shadow_obj in scene.objects)
+            foreach (SceneObjects.SceneObject shadow_obj in scene.objects)
             {
                 Tuple<double, Vector3> intersection = shadow_obj.Intersect(intersectionPoint, direction);
                 if (intersection.Item1 > 0.0001) { return true; }

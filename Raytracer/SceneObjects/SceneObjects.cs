@@ -2,7 +2,8 @@
 using System.Drawing;
 using System.Numerics;
 
-namespace Raytracer
+
+namespace Raytracer.SceneObjects
 {
     public abstract class SceneObject
     {
@@ -21,10 +22,9 @@ namespace Raytracer
         }
 
 
-        /*
-         * Each object will have its own formula for determining collisions
-         * according to its particular defining properties
-         */
+        /// <summary>
+        /// Each object will have its own formula for determining collisions according to its particular defining properties
+        /// </summary>
         public abstract Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction);
 
 
@@ -59,14 +59,16 @@ namespace Raytracer
             {
                 // Reflect view ray across intersection normal and fire new ray in this direction
                 Vector3 viewReflection = rayDirection - 2 * intersectionNormal * Vector3.Dot(rayDirection, intersectionNormal);
-                Tuple<bool, double, Vector3, SceneObject> intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
+                //Tuple<bool, double, Vector3, SceneObject> intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
+                Intersection intersection = scene.ClosestIntersection(intersectionPoint, viewReflection);
+
 
                 // No reflection
-                if (!intersection.Item1) { return pointColor; }
+                if (!intersection.DidIntersect) { return pointColor; }
 
                 // Blend object color with reflected color according to object reflectivity
-                Vector3 intersectionPointNew = intersectionPoint + (float)(intersection.Item2) * viewReflection;
-                Color objColor = intersection.Item4.PointColor(scene, intersectionPointNew, intersection.Item3, viewReflection, reflections - 1);
+                Vector3 intersectionPointNew = intersectionPoint + (float)(intersection.Position) * viewReflection;
+                Color objColor = intersection.IntersectedObject.PointColor(scene, intersectionPointNew, intersection.Normal, viewReflection, reflections - 1);
                 pointColor = ColorManipulator.Add(ColorManipulator.Multiply(objColor, reflectivity), ColorManipulator.Multiply(pointColor, (1 - reflectivity)));
             }
 

@@ -8,7 +8,9 @@ namespace Raytracer
     public class Camera
     {
         // Camera properties
-        private readonly Vector3 focalPoint;
+
+        public Vector3 focalPoint { get; }
+
         private readonly int focalLength;
         private readonly Tuple<int, int> canvasDimensions;
         private readonly int nReflections;
@@ -48,10 +50,9 @@ namespace Raytracer
                     Vector3 worldCoord = focalPoint + focalLength * Vector3.UnitZ + c * Vector3.UnitX - r * Vector3.UnitY;
                     Vector3 direction = Vector3.Normalize(worldCoord - focalPoint);
 
-                    // intersection occurred?,  distance,  normal,  scene object
-                    Tuple<bool, double, Vector3, SceneObject> intersection = scene.ClosestIntersection(focalPoint, direction);
+                    Intersection intersection = scene.ClosestIntersection(focalPoint, direction);
 
-                    if (!intersection.Item1)
+                    if (!intersection.DidIntersect)
                     {
                         // No intersection -> set pixel to black
                         newImage.SetPixel(col, row, Color.FromName("Black"));
@@ -59,8 +60,8 @@ namespace Raytracer
                     else
                     {
                         // Determine color based on scene object
-                        Vector3 intersectionPoint = focalPoint + (float)(intersection.Item2) * direction;
-                        Color objColor = intersection.Item4.PointColor(scene, intersectionPoint, intersection.Item3, direction, nReflections);
+                        Vector3 intersectionPoint = focalPoint + (float)(intersection.Position) * direction;
+                        Color objColor = intersection.IntersectedObject.PointColor(scene, intersectionPoint, intersection.Normal, direction, nReflections);
                         newImage.SetPixel(col, row, objColor);
                     }
                 }

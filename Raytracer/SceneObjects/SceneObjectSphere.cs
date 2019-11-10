@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Numerics;
 
-namespace Raytracer
+namespace Raytracer.SceneObjects
 {
     public class Sphere : SceneObject
     {
@@ -17,12 +17,11 @@ namespace Raytracer
             this.radius = radius;
         }
 
-
-        /*
-        * Given an initial point and a normalized direction vector, see if line defined by these intersects the sphere.
-        * Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
-        * of intersection.
-        */
+        /// <summary>
+        /// Given an initial point and a normalized direction vector, see if line defined by these intersects the sphere.
+        /// Returns where on the line the intersection occurs, in terms of the t parameter, and the normal to the point
+        /// of intersection.
+        /// </summary>
         public override Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
             Vector3 l = position - this.centre;

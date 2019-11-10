@@ -2,7 +2,8 @@
 using System.Drawing;
 using System.Numerics;
 
-namespace Raytracer
+
+namespace Raytracer.SceneObjects
 {
     public class Tri : SceneObject
     {
@@ -21,16 +22,15 @@ namespace Raytracer
             this.normal = Vector3.Normalize(Vector3.Cross(v2 - v0, v0 - v1));
         }
 
-
         public override Color PointColor(Scene scene, Vector3 intersectionPoint, Vector3 intersectionNormal, Vector3 rayDirection, int reflections)
         {
             // Flipping the intersection normal makes shadows work properly
             return base.PointColor(scene, intersectionPoint, intersectionNormal * -1, rayDirection, reflections);
         }
 
-        /*
-         * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-         */
+        /// <summary>
+        /// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+        /// </summary>
         public override Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
             if (Vector3.Dot(normal, direction) <= 0)
