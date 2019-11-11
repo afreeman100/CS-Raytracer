@@ -9,11 +9,11 @@ namespace Raytracer
             Console.WriteLine("Rendering...");
 
             Camera camera = new Camera("img");
-            int resolution = 600;
+            int resolution = 2000;
 
-            Scene scene = SceneBuilder.SceneThree();
+            //Scene scene = SceneBuilder.SceneThree();
             //Scene scene = SceneBuilder.SphereGenerator(50);
-            //Scene scene = SceneBuilder.SceneTwo();
+            Scene scene = SceneBuilder.SceneTwo();
 
             camera.Render(resolution, scene);
         }

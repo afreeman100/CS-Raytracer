@@ -91,7 +91,7 @@ namespace Raytracer
         {
             Scene scene = new Scene();
 
-            scene.lights.Add(new AmbientLight(0.3));
+            scene.lights.Add(new AmbientLight(0.4));
             scene.lights.Add(new DirectionalLight(new Vector3(0.5F, -1, 0.5F), 0.7));
 
             // Pink wall
@@ -103,6 +103,15 @@ namespace Raytracer
                             Color.FromArgb(150, 0, 150),
                             0));
 
+            // Blue wall
+            scene.AddObject(SceneObjects.Composites.Quad(
+                            new Vector3(0, 4, 41),
+                            new Vector3(-10, 4, 14),
+                            new Vector3(0, -30, 41),
+                            new Vector3(-10, -30, 14),
+                            Color.FromArgb(0, 20, 150),
+                            0));
+
             // Floor
             scene.AddObject(SceneObjects.Composites.Quad(
                                 new Vector3(100, -4, 100),
@@ -110,14 +119,21 @@ namespace Raytracer
                                 new Vector3(100, -4, -100),
                                 new Vector3(-100, -4, -100),
                                 Color.FromArgb(230, 230, 250),
-                                0));
+                                0.2));
 
             // Blue sphere
             scene.AddObject(new SceneObjects.Sphere(
-                                new Vector3(1, 3, 15),
-                                4.0,
+                                new Vector3(3, 2 , 17),
+                                3.0,
                                 Color.FromArgb(0, 0, 150),
-                                0));
+                                0.4));
+
+            // Blue sphere
+            scene.AddObject(new SceneObjects.Sphere(
+                                new Vector3(-2, 0 , 15),
+                                2,
+                                Color.FromArgb(0, 200, 30),
+                                0.4));
 
             return scene;
         }
