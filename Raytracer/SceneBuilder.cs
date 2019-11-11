@@ -75,18 +75,33 @@ namespace Raytracer
                                 Color.FromArgb(0, 0, 150),
                                 0));
 
-            //scene.AddObject(SceneObjects.Composites.DoubleSidedCube(
-            //        new Vector3(4, -1, 24),
-            //        new Vector3(4, 5, 24),
-            //        new Vector3(2, -3, 18),
-            //        new Vector3(2, 3, 18),
+            // Floor
+            scene.AddObject(SceneObjects.Composites.Quad(
+                                new Vector3(100, -4, 100),
+                                new Vector3(-100, -4, 100),
+                                new Vector3(100, -4, -100),
+                                new Vector3(-100, -4, -100),
+                                Color.FromArgb(230, 230, 250),
+                                0.2));
 
-            //        new Vector3(-2, -1, 24),
-            //        new Vector3(-2, 5, 24),
-            //        new Vector3(-4, -3, 18),
-            //        new Vector3(-4, 3, 18),
-            //        Color.FromArgb(0, 0, 150),
-            //        0));
+            return scene;
+        }
+
+        public static Scene SceneTwo()
+        {
+            Scene scene = new Scene();
+
+            scene.lights.Add(new AmbientLight(0.3));
+            scene.lights.Add(new DirectionalLight(new Vector3(0.5F, -1, 0.5F), 0.7));
+
+            // Pink wall
+            scene.AddObject(SceneObjects.Composites.Quad(
+                            new Vector3(0, -30, 41),
+                            new Vector3(10, -30, 14),
+                            new Vector3(0, 4, 41),
+                            new Vector3(10, 4, 14),
+                            Color.FromArgb(150, 0, 150),
+                            0));
 
             // Floor
             scene.AddObject(SceneObjects.Composites.Quad(
@@ -95,6 +110,13 @@ namespace Raytracer
                                 new Vector3(100, -4, -100),
                                 new Vector3(-100, -4, -100),
                                 Color.FromArgb(230, 230, 250),
+                                0));
+
+            // Blue sphere
+            scene.AddObject(new SceneObjects.Sphere(
+                                new Vector3(1, 3, 15),
+                                4.0,
+                                Color.FromArgb(0, 0, 150),
                                 0));
 
             return scene;

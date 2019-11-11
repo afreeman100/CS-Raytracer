@@ -24,9 +24,9 @@ namespace Raytracer.SceneObjects
         /// </summary>
         public override Tuple<double, Vector3> Intersect(Vector3 position, Vector3 direction)
         {
-            Vector3 l = position - this.centre;
+            Vector3 l = position - centre;
             double b = 2 * Vector3.Dot(direction, l);
-            double c = l.LengthSquared() - Math.Pow(this.radius, 2);
+            double c = l.LengthSquared() - Math.Pow(radius, 2);
 
             double determinant = b * b - 4 * c;
 
@@ -40,7 +40,7 @@ namespace Raytracer.SceneObjects
                 double t = (t1 > 0 && t2 > 0) ? Math.Min(t1, t2) : Math.Max(t1, t2);
 
                 // Calculate vector from centre to intersection point and normalize
-                Vector3 normal = (position + (float)(t) * direction) - this.centre;
+                Vector3 normal = (position + (float)(t) * direction) - centre;
                 normal = Vector3.Normalize(normal);
 
                 return new Tuple<double, Vector3>(t, normal);

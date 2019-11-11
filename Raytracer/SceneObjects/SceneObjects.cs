@@ -11,13 +11,13 @@ namespace Raytracer.SceneObjects
         private readonly double reflectivity;
         private readonly double specularReflectivity;
         private readonly double specularFalloff;
-        private readonly double transparency = 0.5;
-        private readonly double refractiveIndex = 0.2;
+        private readonly double transparency;
 
 
         protected SceneObject(Color color, double reflectivity)
         {
             this.color = color;
+            this.transparency = 0;
             this.reflectivity = reflectivity;
             this.specularReflectivity = 0.3;
             this.specularFalloff = 10;
