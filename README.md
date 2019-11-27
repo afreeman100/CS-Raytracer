@@ -1,4 +1,4 @@
-# Raytracer.CS
+# C#-Raytracer
 A raytracer made to teach myself C#. 
 
 <p align="center">
